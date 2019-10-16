@@ -1,0 +1,88 @@
+<?xml version = "1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="anh_robot">
+	<xacro:include filename="$(find gazebo_plugins)/test/multi_robot_scenario/xacro/laser/hokuyo.xacro" />
+	<xacro:laser name="laser_vert_bottom" parent="base" xyz="0.3157894464801903 -0.002068548615034871 0.5099999434059285" rpy="3.1354753 -1.3045001 0.0024658" meshes="package://gazebo_plugins/test/multi_robot_scenario/meshes/laser" />
+	<xacro:laser name="laser_vert_top_right" parent="base" xyz="0.2978 -0.1450 1.8451" rpy="-1.176 0.6313 -1.9377" meshes="package://gazebo_plugins/test/multi_robot_scenario/meshes/laser" />
+	<xacro:laser name="laser_vert_top_left" parent="base" xyz="0.2997 0.1531 1.8443" rpy="1.178 0.6198 1.956" meshes="package://gazebo_plugins/test/multi_robot_scenario/meshes/laser" />
+	<xacro:laser name="laser_horiz" parent="base" xyz="0.2325 0.0001 1.9201" rpy="-0.0012 0.1146 -0.0015" meshes="package://gazebo_plugins/test/multi_robot_scenario/meshes/laser" />
+	<link name="base">
+		<visual>
+			<geometry>
+				<box size="0.94 0.78 1.98"/>
+			</geometry>
+		</visual>
+	</link>
+
+	<joint name="base_vert_bottom_joint" type="fixed">
+		<parent link="base"/>
+		<child link="laser_vert_bottom"/>
+		<origin xyz="0.3158 -0.0021 0.51" rpy="3.1355 -1.3045 0.0025"/>
+	</joint>
+
+	<joint name="base_vert_top_right_joint" type="fixed">
+		<parent link="base"/>
+		<child link="laser_vert_top_right"/>
+		<origin xyz="0.2978 -0.145 1.8451" rpy="-1.176 0.6313 -1.9377"/>
+	</joint>
+
+	<joint name="base_vert_top_left_joint" type="fixed">
+		<parent link="base"/>
+		<child link="laser_vert_top_left"/>
+		<origin xyz="0.2997 0.1531 1.8443" rpy="1.178 0.6198 1.956"/>
+	</joint>
+
+	<joint name="base_horiz_joint" type="fixed">
+		<parent link="base"/>
+		<child link="laser_horiz"/>
+		<origin xyz="0.2325 0.0001 1.9201" rpy="-0.0012 0.1146 -0.0015"/>
+	</joint>
+
+	<xacro:macro name="wheel_center_xacro" params ="suffix reflect">
+		<link name="wheel_${suffix}">
+			<visual>
+				<geometry>
+					<cylinder radius="0.15" length="0.05"/>
+				</geometry>
+			</visual>
+			<collision>
+				<geometry>
+					<cylinder radius="0.15" length="0.05"/>
+				</geometry>
+			</collision>
+		</link>
+		
+		<joint name="base_wheel_${suffix}_joint" type="continuous">
+			<parent link="base"/>
+			<child link="wheel_${suffix}"/>
+			<origin xyz="-0.1 0 0" rpy="-1.57 0 0"/>
+			<limit effort="100" velocity="15" />
+			<joint_properties damping="0.0" friction="0.0" />
+		</joint>
+	</xacro:macro>
+	<xacro:wheel_center_xacro suffix="center" reflect="1" />
+
+	<xacro:macro name="wheel_xacro" params ="suffix reflect">
+		<link name="wheel_${suffix}">
+			<visual>
+				<geometry>
+					<cylinder radius="0.2" length="0.05"/>
+				</geometry>
+			</visual>
+			<collision>
+				<geometry>
+					<cylinder radius="0.2" length="0.05"/>
+				</geometry>
+			</collision>
+		</link>
+		
+		<joint name="base_wheel_${suffix}_joint" type="continuous">
+			<parent link="base"/>
+			<child link="wheel_${suffix}"/>
+			<origin xyz="-0.1 ${reflect * 0.4} 0" rpy="-1.57 0 0"/>
+			<limit effort="100" velocity="15" />
+			<joint_properties damping="0.0" friction="0.0" />
+		</joint>
+	</xacro:macro>
+	<xacro:wheel_xacro suffix="left" reflect="1" />
+	<xacro:wheel_xacro suffix="right" reflect="-1" />
+</robot>
